@@ -96,10 +96,6 @@ CREATE TABLE notes (
 ### Editing/Deleting
 - Each book and note has edit and delete options
 
-## License
-
-ISC
-
 ## Credits
 
 - Book covers provided by [Open Library Covers API](https://openlibrary.org/dev/docs/api/covers)
