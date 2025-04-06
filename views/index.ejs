@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+          sans-serif;
+      }
+
+      :root {
+        --background: #121212;
+        --surface: #1e1e1e;
+        --surface-light: #2a2a2a;
+        --primary: #bb86fc;
+        --primary-dark: #9d4edd;
+        --secondary: #03dac6;
+        --error: #cf6679;
+        --text-primary: rgba(255, 255, 255, 0.87);
+        --text-secondary: rgba(255, 255, 255, 0.6);
+        --border-radius: 8px;
+        --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+      }
+
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        background-color: var(--background);
+        color: var(--text-primary);
+        padding: 2rem 1rem;
+      }
+
+      header {
+        width: min(100%, 600px);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--surface-light);
+      }
+
+      h1 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--primary);
+      }
+
+      button {
+        background-color: var(--surface);
+        color: var(--text-primary);
+        border: 1px solid var(--primary);
+        border-radius: var(--border-radius);
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: var(--transition);
+        font-weight: 500;
+      }
+
+      button:hover {
+        background-color: var(--primary);
+        color: var(--background);
+      }
+
+      .add-book {
+        background-color: var(--primary);
+        color: var(--background);
+      }
+
+      .add-book:hover {
+        background-color: var(--primary-dark);
+        border-color: var(--primary-dark);
+      }
+
+      .books-container {
+        width: min(100%, 600px);
+      }
+
+      .book-container {
+        display: flex;
+        align-items: flex-start;
+        gap: 1.5rem;
+        background-color: var(--surface);
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: var(--shadow);
+        max-height: 400px;
+        overflow-y: auto;
+        transition: var(--transition);
+        border: 1px solid var(--surface-light);
+        position: relative;
+      }
+
+      .book-container:hover {
+        border-color: var(--primary);
+        transform: translateY(-2px);
+      }
+
+      .book-cover {
+        width: 120px;
+        min-width: 120px;
+        height: auto;
+        border-radius: 4px;
+        box-shadow: var(--shadow);
+        object-fit: cover;
+        aspect-ratio: 2/3;
+        background-color: var(--surface-light);
+      }
+
+      .book-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      h3.title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        cursor: pointer;
+        color: var(--primary);
+        margin-bottom: 0.3rem;
+        transition: var(--transition);
+      }
+
+      h3.title:hover {
+        color: var(--secondary);
+      }
+
+      .book-info h4 {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--text-secondary);
+        margin-bottom: 0.2rem;
+      }
+
+      .book-info p {
+        font-size: 0.95rem;
+        line-height: 1.5;
+        color: var(--text-primary);
+        margin-top: 0.5rem;
+      }
+
+      .buttons {
+        display: flex;
+        gap: 0.8rem;
+        margin-bottom: 2rem;
+      }
+
+      .edit-button,
+      .delete-button {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+      }
+
+      .delete-button {
+        background-color: transparent;
+        color: var(--error);
+        border-color: var(--error);
+      }
+
+      .delete-button:hover {
+        background-color: var(--error);
+        color: var(--text-primary);
+      }
+
+      /* Custom scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: var(--surface-light);
+        border-radius: 4px;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: var(--primary);
+        border-radius: 4px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--primary-dark);
+      }
+
+      /* Modal styles */
+      .modal-screen {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(3px);
+        z-index: 10;
+      }
+
+      .modal {
+        display: flex;
+        flex-direction: column;
+        width: min(600px, 95%);
+        position: fixed;
+        background-color: var(--surface);
+        border: 1px solid var(--primary);
+        top: 50vh;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 2rem;
+        border-radius: var(--border-radius);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        z-index: 20;
+        gap: 1rem;
+      }
+
+      .modal h2 {
+        text-align: center;
+        color: var(--primary);
+        margin-bottom: 1rem;
+        font-size: 1.6rem;
+      }
+
+      .modal label {
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+        margin-bottom: 0.3rem;
+      }
+
+      .modal input,
+      .modal textarea {
+        background-color: var(--surface-light);
+        border: 1px solid var(--surface-light);
+        padding: 0.8rem;
+        border-radius: var(--border-radius);
+        color: var(--text-primary);
+        font-size: 1rem;
+        transition: var(--transition);
+      }
+
+      .modal input:focus,
+      .modal textarea:focus {
+        border-color: var(--primary);
+        outline: none;
+      }
+
+      .modal textarea {
+        resize: vertical;
+        min-height: 120px;
+        font-family: inherit;
+      }
+
+      .modal button {
+        margin-top: 0.5rem;
+      }
+
+      .modal button[type="submit"] {
+        background-color: var(--primary);
+        color: var(--background);
+      }
+
+      .modal button[type="submit"]:hover {
+        background-color: var(--primary-dark);
+      }
+
+      .hidden {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Larsen's Book Notes</h1>
+      <button class="add-book">+ Add Book</button>
+    </header>
+    <div class="books-container">
+      <% books.forEach(book => { %>
+      <div class="book-container">
+        <img
+          class="book-cover"
+          src="https://covers.openlibrary.org/b/isbn/<%= book.isbn %>.jpg"
+          alt="book cover"
+        />
+        <div class="book-info">
+          <h3 class="title" id="<%=book.id%>"><%= book.title %></h3>
+          <h4>ISBN: <%= book.isbn %></h4>
+          <h4>Date read: <%= book.date_read %></h4>
+          <h4>My rating: <%= book.rating_out_of_ten %>/10</h4>
+          <h4>Description:</h4>
+          <p><%= book.description %></p>
+        </div>
+      </div>
+      <div class="buttons">
+        <button
+          class="edit-button"
+          bookid="<%= book.id %>"
+          booktitle="<%=book.title%>"
+          bookisbn="<%= book.isbn %>"
+          bookdate="<%= book.date_read %>"
+          bookrating="<%= book.rating_out_of_ten %>"
+          bookdescription="<%= book.description %>"
+        >
+          edit
+        </button>
+        <form action="/delete-book" method="post" style="display: inline">
+          <button
+            name="id"
+            type="submit"
+            class="delete-button"
+            value="<%= book.id %>"
+          >
+            delete
+          </button>
+        </form>
+      </div>
+      <%});%>
+    </div>
+    <div class="modal-screen hidden"></div>
+    <form action="/new-book" class="new-book modal hidden" method="post">
+      <h2>New Book</h2>
+      <label for="new-title">Title</label>
+      <input name="title" type="text" id="new-title" required />
+      <label for="new-ISBN">ISBN</label>
+      <input name="ISBN" type="number" id="new-ISBN" required />
+      <label for="new-date">Date Read</label>
+      <input type="date" name="date" id="new-date" required />
+      <label for="new-rating">Rating out of 10</label>
+      <input name="rating" type="number" max="10" min="1" id="new-rating" />
+      <label for="new-description">Description</label>
+      <textarea name="description" id="new-description" required></textarea>
+      <button type="submit">Add</button>
+      <button type="button">Cancel</button>
+    </form>
+
+    <form action="/edit-book" class="edit-book modal hidden" method="post">
+      <h2>Edit Book</h2>
+      <label for="edit-title">Title</label>
+      <input name="title" type="text" id="edit-title" required />
+      <label for="edit-ISBN">ISBN</label>
+      <input name="ISBN" type="number" id="edit-ISBN" required />
+      <label for="edit-date">Date Read</label>
+      <input type="date" name="date" id="edit-date" required />
+      <label for="edit-rating">Rating out of 10</label>
+      <input name="rating" type="number" max="10" min="1" id="edit-rating" />
+      <label for="edit-description">Description</label>
+      <textarea name="description" id="edit-description" required></textarea>
+      <button name="id" id="edit-submit" type="submit">Submit</button>
+      <button type="button">Cancel</button>
+    </form>
+
+    <script>
+      document.querySelectorAll(`h3.title`).forEach((h3) => {
+        h3.addEventListener("click", function () {
+          window.location.href = `/book?id=${this.id}`;
+        });
+      });
+      //cancel add new book form
+      document
+        .querySelector(`form.new-book button[type="button"]`)
+        .addEventListener("click", function () {
+          document.querySelector(`form.new-book`).classList.add("hidden");
+          document.querySelector(`.modal-screen`).classList.add("hidden");
+          clearInputs("form.new-book");
+        });
+      //show new book form
+      document
+        .querySelector(`button.add-book`)
+        .addEventListener("click", function () {
+          document.querySelector(`form.new-book`).classList.remove("hidden");
+          document.querySelector(`.modal-screen`).classList.remove("hidden");
+        });
+      //hide form modal on outside click
+      document
+        .querySelector(`.modal-screen`)
+        .addEventListener("click", function () {
+          document.querySelectorAll(`form.modal`).forEach((modal) => {
+            modal.classList.add("hidden");
+          });
+          document.querySelector(`.modal-screen`).classList.add("hidden");
+        });
+      function clearInputs(selector) {
+        document
+          .querySelectorAll(`${selector} input, ${selector} textarea`)
+          .forEach((input) => {
+            input.value = "";
+          });
+      }
+      //edit book
+      document.querySelectorAll(".edit-button").forEach((button) => {
+        button.addEventListener("click", function () {
+          document.querySelector(`.edit-book`).classList.remove("hidden");
+          document.querySelector(`.modal-screen`).classList.remove("hidden");
+          document.querySelector(`#edit-title`).value =
+            button.getAttribute("booktitle");
+          document.querySelector(`#edit-ISBN`).value =
+            button.getAttribute("bookisbn");
+          document.querySelector(`#edit-date`).value =
+            button.getAttribute("bookdate");
+          document.querySelector(`#edit-rating`).value =
+            button.getAttribute("bookrating");
+          document.querySelector(`#edit-description`).value =
+            button.getAttribute("bookdescription");
+          document.querySelector(`#edit-submit`).value =
+            button.getAttribute("bookid");
+        });
+      });
+      document
+        .querySelector(`form.edit-book button[type="button"]`)
+        .addEventListener("click", function () {
+          document.querySelector(`form.edit-book`).classList.add("hidden");
+          document.querySelector(`.modal-screen`).classList.add("hidden");
+          clearInputs("form.edit-book");
+        });
+    </script>
+  </body>
+</html>

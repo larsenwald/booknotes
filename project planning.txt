@@ -1,0 +1,15 @@
+SCHEMA:
+    books table:
+        id
+        title
+        ISBN
+        date_read
+        rating_out_of_ten
+        description
+
+    notes table:
+        id (references books id)
+        note
+
+Book cover API:
+    https://covers.openlibrary.org/b/isbn/9780786838653.jpg //image of percy jackson and the lightning thief
